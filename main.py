@@ -35,8 +35,9 @@ country_codes = country_data['Country Code'].tolist()
 country_dict = country_data.set_index('Country Code')['Country'].to_dict()
 
 # Get restaurant details and events
-restaurant_details = []
-restaurant_events = []
+restaurant_details = [] # task 1
+restaurant_events = [] # task 2
+rating_data = [] # task 3
 
 for i in range(len(restaurant_data)):
 
@@ -81,6 +82,38 @@ for i in range(len(restaurant_data)):
                         'Event Start Date': start_date,
                         'Event End Date': end_date
                     })
+        
+        # Task 3: Collect aggregate_rating and rating_text
+        rating_text = details['user_rating']['rating_text'].lower()
+        aggregate_rating = float(details['user_rating']['aggregate_rating'])
+
+        ## Categorize rating text
+        if rating_text in ['excellent', 'eccellente', 'excelente', 'terbaik']:
+            category = "Excellent"
+        elif rating_text in ['very good', 'bardzo dobrze', 'muito bom', 'muy bueno', 'velmi dobré']:
+            category = "Very good"
+        elif rating_text in ['good', 'bueno']:
+            category = "Good"
+        elif rating_text in ['average']:
+            category = "Average"
+        elif rating_text in ['poor']:
+            category = "Poor"
+        else:
+            category = None
+
+        rating_data.append({
+            'Rating text': rating_text,
+            'Aggregate rating': aggregate_rating,
+            'Category': category
+        })
+
+# Ratings analysis
+rating_df = pd.DataFrame(rating_data)
+rating_stats = rating_df.groupby('Category')['Aggregate rating'].agg(['min', 'max', 'mean', 'median']).sort_values(by='min')
+print("General statistics:")
+print(rating_stats)
+print("As seen from the statistics, thresholds for each rating text can be determined by the minimum and \
+maximum aggregated rating for each group. See README.md for the final thresholds determined.")
 
 
 # Save outputs
@@ -92,3 +125,4 @@ restaurant_events_df = pd.DataFrame(restaurant_events)
 restaurant_events_df.fillna('NA', inplace=True)
 restaurant_events_df.to_csv('./output/restaurant_events.csv', index=False)
 
+rating_df.to_csv('./output/ratings.csv', index=False)
