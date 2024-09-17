@@ -85,8 +85,10 @@ for i in range(len(restaurant_data)):
 
 # Save outputs
 restaurant_details_df = pd.DataFrame(restaurant_details)
+restaurant_details_df.fillna('NA', inplace=True)
 restaurant_details_df.to_csv('./output/restaurant_details.csv', index=False)
 
 restaurant_events_df = pd.DataFrame(restaurant_events)
+restaurant_events_df.fillna('NA', inplace=True)
 restaurant_events_df.to_csv('./output/restaurant_events.csv', index=False)
 
