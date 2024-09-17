@@ -9,7 +9,7 @@ def extract_json_data(url):
     if response.status_code == 200: 
         data = response.json()
     else:
-        print(f"Failed to fetch data. Status code: {response.status_code}")
+        print(f'Failed to fetch data. Status code: {response.status_code}')
     return data
 
 
@@ -28,16 +28,16 @@ def event_in_apr_2019(start_date, end_date):
 # Data extraction
 restaurant_url = 'https://raw.githubusercontent.com/Papagoat/brain-assessment/main/restaurant_data.json'
 restaurant_data = extract_json_data(restaurant_url)
-country_data = pd.read_excel("./data/Country-Code.xlsx")
+country_data = pd.read_excel('./data/Country-Code.xlsx')
 
 # To match country code & get country
 country_codes = country_data['Country Code'].tolist()
 country_dict = country_data.set_index('Country Code')['Country'].to_dict()
 
 # Get restaurant details and events
-restaurant_details = [] # task 1
-restaurant_events = [] # task 2
-rating_data = [] # task 3
+restaurant_details = []    # task 1
+restaurant_events = []     # task 2
+rating_data = []           # task 3
 
 for i in range(len(restaurant_data)):
 
@@ -89,15 +89,16 @@ for i in range(len(restaurant_data)):
 
         ## Categorize rating text
         if rating_text in ['excellent', 'eccellente', 'excelente', 'terbaik']:
-            category = "Excellent"
-        elif rating_text in ['very good', 'bardzo dobrze', 'muito bom', 'muy bueno', 'velmi dobré']:
-            category = "Very good"
+            category = 'Excellent'
+        elif rating_text in ['very good', 'bardzo dobrze', 'muito bom', 
+                             'muy bueno', 'velmi dobré']:
+            category = 'Very good'
         elif rating_text in ['good', 'bueno']:
-            category = "Good"
+            category = 'Good'
         elif rating_text in ['average']:
-            category = "Average"
+            category = 'Average'
         elif rating_text in ['poor']:
-            category = "Poor"
+            category = 'Poor'
         else:
             category = None
 
@@ -109,11 +110,17 @@ for i in range(len(restaurant_data)):
 
 # Ratings analysis
 rating_df = pd.DataFrame(rating_data)
-rating_stats = rating_df.groupby('Category')['Aggregate rating'].agg(['min', 'max', 'mean', 'median']).sort_values(by='min')
-print("General statistics:")
+rating_stats = (
+    rating_df
+    .groupby('Category')['Aggregate rating']
+    .agg(['min', 'max', 'mean', 'median'])
+    .sort_values(by='min')
+)
+print('General statistics:')
 print(rating_stats)
-print("As seen from the statistics, thresholds for each rating text can be determined by the minimum and \
-maximum aggregated rating for each group. See README.md for the final thresholds determined.")
+print('As seen from the statistics, thresholds for each rating text \
+      can be determined by the minimum and maximum aggregated rating \
+      for each group. See README.md for the final thresholds determined.')
 
 
 # Save outputs
